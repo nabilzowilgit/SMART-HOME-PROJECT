@@ -1,5 +1,5 @@
-#ifndef HAL_HAL_ADC_ADC_CONFIG_H_
-#define HAL_HAL_ADC_ADC_CONFIG_H_
+#ifndef HAL_ADC_ADC_CONFIG_H_
+#define HAL_ADC_ADC_CONFIG_H_
 
 //AUTO TRIGER MODES
 #define free_running_mode				0

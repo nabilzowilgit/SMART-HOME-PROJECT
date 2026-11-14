@@ -1,17 +1,13 @@
-#include "../../SERVICE/std_types.h"
-#include "../../SERVICE/bit_math.h"
+#include "../../SERV/std_types.h"
+#include "../../SERV/bit_math.h"
 
-#include "../../MCAL/DIO/dio_init.h"
+#include "../DIO/dio_init.h"
 
-#include "../../MCAL/MCAL_EEPROM/MCAL_EEPROM_registers.h"
+#include "EEPROM_registers.h"
 
-#include "HAL_EEPROM_init.h"
+#include "EEPROM_init.h"
 
-//void EEPROM_voidInit() // not needed
-//{
-//}
-
-void EEPROM_voidWriteData(u16 address, u8 data)
+void EEPROM_voidWriteData(uint16 address, uint8 data)
 {
 /*
 	// USING THE ORDER OF THE STEPS LISTED IN THE DATASHEET
@@ -25,7 +21,7 @@ void EEPROM_voidWriteData(u16 address, u8 data)
 	EECR_R |= (1 << EECR_EEWE); // EEPROM WRITE ENABLE
 */
 
-	  u8 savedSREG;
+	  uint8 savedSREG;
 
 	/* Valid addresses: 0–1023 */
 	if (address > 1023)
@@ -54,7 +50,7 @@ void EEPROM_voidWriteData(u16 address, u8 data)
 	SREG_R = savedSREG;
 }
 
-u8 EEPROM_u8ReadData(u16 address)
+uint8 EEPROM_u8ReadData(uint16 address)
 {
 /*
 	while(GET_BIT(EECR_R, EECR_EEWE)); // INTERRUPT CAN BE USED INSTEAD
@@ -66,8 +62,8 @@ u8 EEPROM_u8ReadData(u16 address)
 	return EEDR_R;
 */
 
-	u8 savedSREG;
-	u8 data;
+	uint8 savedSREG;
+	uint8 data;
 
 	if (address > 1023)
 	{

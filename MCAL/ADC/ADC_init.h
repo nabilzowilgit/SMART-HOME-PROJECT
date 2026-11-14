@@ -1,5 +1,5 @@
-#ifndef HAL_HAL_ADC_ADC_INIT_H_
-#define HAL_HAL_ADC_ADC_INIT_H_
+#ifndef HAL_ADC_ADC_INIT_H_
+#define HAL_ADC_ADC_INIT_H_
 
 void (*ADC_ISR_FUN)(void);
 
@@ -52,13 +52,13 @@ void ADC_voidInit();
 void ADC_voidSwitchOn();
 void ADC_voidSwitchOff();
 
-void ADC_voidChannelSel(u8 u8copy_channel);
+void ADC_voidChannelSel(uint8 u8copy_channel);
 
 void ADC_voidInterruptOn();
 void ADC_voidInterruptOff();
 
-void ADC_voidStartConversion(u8 u8copy_channel);//ACTION HAPPENS WHEN INTERRUPT OCCURS
-u16  ADC_u16RetrunResult(u8 u8copy_channel);//POOLING TILL INTERUPT FLAG
+void ADC_voidStartConversion(uint8 u8copy_channel);//ACTION HAPPENS WHEN INTERRUPT OCCURS
+uint16  ADC_u16RetrunResult(uint8 u8copy_channel);//POOLING TILL INTERUPT FLAG
 
 void ADC_voidAutoTrigerOn();
 void ADC_voidAutoTrigerOff();

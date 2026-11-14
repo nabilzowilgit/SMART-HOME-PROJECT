@@ -1,162 +1,91 @@
-#include "../../SERVICE/std_types.h"
-#include "../../SERVICE/bit_math.h"
-
+#include "../../SERV/std_types.h"
+#include "../../SERV/bit_Math.h"
+#include "dio_privt.h"
 #include "dio_init.h"
-#include "dio_registers.h"
 
-static volatile u8 *regs_PINS [regs_no] = {&PINA_R,  &PINB_R,  &PINC_R,  &PIND_R};
-static volatile u8 *regs_DDRS [regs_no] = {&DDRA_R,  &DDRB_R,  &DDRC_R,  &DDRD_R};
-static volatile u8 *regs_PORTS[regs_no] = {&PORTA_R, &PORTB_R, &PORTC_R, &PORTD_R};
+volatile uint8 *Arr_DIR[4]  ={DDRA_REG,DDRB_REG,DDRC_REG,DDRD_REG};
+volatile uint8 *Arr_PORT[4] ={PORTA_REG,PORTB_REG,PORTC_REG,PORTD_REG,};
+volatile uint8 *Arr_Pin[4]  ={PINA_REG,PINB_REG,PINC_REG,PIND_REG,};
 
-void DIO_voidSetPinsDir(u8 *u8copy_pins, u8 u8copy_size, u8 u8copy_direction)
-{
-	u8 u8count = 0;
+void DIO_vidSetPortDir(uint8 u8CopyPort,uint8 u8CopyDir){
+	if(u8CopyPort <= PORTD){
+		*Arr_DIR[u8CopyPort] = u8CopyDir;
+	}
+}
+void DIO_vidSetPortVal(uint8 u8CopyPort,uint8 u8CopyVal){
+	if(u8CopyPort <= PORTD){
+		*Arr_PORT[u8CopyPort] = u8CopyVal;
+	}
 
-	for(u8count = 0; u8count < u8copy_size; u8count++)
-	{
-		switch(u8copy_direction)
-		{
-			case PIN_OUTPUT :
-				SET_BIT(*regs_DDRS[u8copy_pins[u8count] / 8], u8copy_pins[u8count] % 8);
-				break;
+}
+uint8 DIO_u8GetPortVal(uint8 u8CopyPort){
+	uint8 Copy_Data =0;
+	if(u8CopyPort <= PORTD){
+		Copy_Data = *Arr_Pin[u8CopyPort];
+	}
+	return Copy_Data;
+}
 
-			case PIN_INPUT :
-				CLEAR_BIT(*regs_DDRS[u8copy_pins[u8count] / 8], u8copy_pins[u8count] % 8);
-				break;
+//void DIO_vidSetPinDir(uint8 u8CopyPort,uint8 u8CopyPin,uint8 u8CopyDir){
+
+//}
+
+void DIO_vidSetPinDir(uint8 u8CopyPin,uint8 u8CopyDir){
+	switch(u8CopyDir){
+	case INPUT_PIN :    CLEAR_BIT(*Arr_DIR[u8CopyPin / 8] , (u8CopyPin % 8)); break;
+	case OUTPUT_PIN :   SET_BIT(*Arr_DIR[u8CopyPin / 8] , (u8CopyPin % 8)); break;
+	}
+}
+
+void DIO_vidSetPinVal(uint8 u8CopyPin,uint8 u8CopyVal){
+	switch(u8CopyVal){
+	case HIGH_PIN :     SET_BIT(*Arr_PORT[u8CopyPin / 8] , (u8CopyPin % 8)); break;
+	case LOW_PIN :      CLEAR_BIT(*Arr_PORT[u8CopyPin / 8] , (u8CopyPin % 8)); break;
+	case TOGGLE_PIN :   TOGGLE_BIT(*Arr_PORT[u8CopyPin / 8] , (u8CopyPin % 8)); break;
+	}
+}
+uint8 DIO_u8GetPinVal(uint8 u8CopyPin){
+	return GET_BIT(*Arr_Pin[u8CopyPin / 8] , (u8CopyPin % 8));
+}
+
+void DIO_vidSetPinsDir(uint8 *u8Pin,uint8 u8CopyBound,uint8 u8CopyDir){
+	uint8 i;
+	for(i = 0;i<u8CopyBound;i++){
+		switch(u8CopyDir){
+		case OUTPUT_PIN:SET_BIT(*Arr_DIR[(u8Pin[i]/8)],(u8Pin[i]%8));break;
+		case INPUT_PIN :CLEAR_BIT(*Arr_DIR[(u8Pin[i]/8)],(u8Pin[i]%8));break;
 		}
 	}
 }
 
-void DIO_voidSetPinsVal(u8 *u8copy_pins, u8 u8copy_size, u8 u8copy_val)
-{
-	u8 u8count = 0;
-
-	for(u8count = 0; u8count < u8copy_size; u8count++)
-	{
-		switch(u8copy_val)
-		{
-			case PIN_HIGH :
-				SET_BIT(*regs_PORTS[u8copy_pins[u8count] / 8], u8copy_pins[u8count] % 8);
-				break;
-
-			case PIN_LOW :
-				CLEAR_BIT(*regs_PORTS[u8copy_pins[u8count] / 8], u8copy_pins[u8count] % 8);
-				break;
+void DIO_vidSetPinsVal(uint8 *u8Pin,uint8 u8CopyBound,uint8 u8CopyVal){
+	uint8 i;
+	for(i = 0;i<u8CopyBound;i++){
+		switch(u8CopyVal){
+		case HIGH_PIN:SET_BIT(*Arr_PORT[(u8Pin[i]/8)],(u8Pin[i]%8));break;
+		case LOW_PIN :CLEAR_BIT(*Arr_PORT[(u8Pin[i]/8)],(u8Pin[i]%8));break;
 		}
 	}
 }
 
-void DIO_voidCopyPinsVal(u8 *u8copy_pins, u8 u8copy_size, u8 u8copy_values)
-{
-	u8 u8count;
 
-	for(u8count = 0; u8count < u8copy_size; u8count++)
-	{
-		switch(GET_BIT(u8copy_values, u8count))
-		{
-			case PIN_HIGH :
-				SET_BIT(*regs_PORTS[u8copy_pins[u8count] / 8], u8copy_pins[u8count] % 8);
-				break;
 
-			case PIN_LOW :
-				CLEAR_BIT(*regs_PORTS[u8copy_pins[u8count] / 8], u8copy_pins[u8count] % 8);
-				break;
-		}
-	}
-}
 
-void DIO_voidSetPinDir(u8 u8copy_pin, u8 u8copy_direction)
-{
-	if(u8copy_pin <= PD7)
-	{
-		switch(u8copy_direction)
-		{
-			case PIN_OUTPUT :
-				SET_BIT(*regs_DDRS[u8copy_pin / 8], u8copy_pin % 8);
-			break;
 
-			case PIN_INPUT :
-				CLEAR_BIT(*regs_DDRS[u8copy_pin / 8], u8copy_pin % 8);
-			break;
 
-			default : break; /* NOTHING TO DO :) */
-		}
-	}
-	else
-		return;
-}
 
-void DIO_voidSetPinVal(u8 u8copy_pin, u8 u8copy_val)
-{
-	if(u8copy_pin <= PD7)
-	{
-		switch(u8copy_val)
-		{
-			case PIN_TOGGLE :
-				TOGGLE_BIT(*regs_PORTS[u8copy_pin / 8], u8copy_pin % 8);
-			break;
 
-			case PIN_HIGH :
-				SET_BIT(*regs_PORTS[u8copy_pin / 8], u8copy_pin % 8);
-			break;
 
-			case PIN_LOW :
-				CLEAR_BIT(*regs_PORTS[u8copy_pin / 8], u8copy_pin % 8);
-			break;
 
-			default : break; /* NOTHING TO DO :) */
-		}
-	}
-	else
-		return;
-}
 
-u8 DIO_u8GetPinVal(u8 u8copy_pin)
-{
-	if(u8copy_pin <= PD7)
-	{
-		 return GET_BIT(*regs_PINS[u8copy_pin / 8], u8copy_pin % 8);
-	}
 
-	return ERROR;
-}
 
-void DIO_voidSetPortDir(u8 u8copy_port, u8 u8copy_direction)
-{
-	if(u8copy_port <= PORTD)
-	{
-		*regs_DDRS[u8copy_port] = u8copy_direction;
-	}
-	else
-		return;
-}
 
-void DIO_voidSetPortVal(u8 u8copy_port, u8 u8copy_val)
-{
-	if(u8copy_port <= PORTD)
-	{
-		*regs_PORTS[u8copy_port] = u8copy_val;
-	}
-	else
-		return;
-}
 
-u8 DIO_u8GetPortVal(u8 u8copy_port)
-{
-	if(u8copy_port <= PORTD)
-	{
-		return *regs_PINS[u8copy_port];
-	}
-	else
-		return ERROR;
-}
 
-void DIO_voidTogglePort(u8 u8copy_port)
-{
-	if(u8copy_port <= PORTD)
-	{
-		TOGGLE_REG(*regs_PORTS[u8copy_port]);
-	}
-	else
-		return;
-}
+
+
+
+
+
+

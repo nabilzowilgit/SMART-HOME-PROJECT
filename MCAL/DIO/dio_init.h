@@ -1,82 +1,40 @@
-#ifndef DIO_INIT_H_
-#define DIO_INIT_H_
+#ifndef MCAL_DIO_DIO_INIT_H_
+#define MCAL_DIO_DIO_INIT_H_
 
-#define ERROR	(u8)0
+#define PORTA    (uint8)0
+#define PORTB    (uint8)1
+#define PORTC    (uint8)2
+#define PORTD    (uint8)3
 
-#define regs_no (u8)4
+#define OUTPUT_PIN    (uint8)1
+#define INPUT_PIN     (uint8)0
 
-#define PORTA	(u8)0
-#define PORTB	(u8)1
-#define PORTC	(u8)2
-#define PORTD	(u8)3
+#define OUTPUT_PORT  (uint8)0xFF
+#define INPUT_PORT   (uint8)0x00
 
-typedef enum
-{
-	PA0 = 0,
-	PA1,
-	PA2,
-	PA3,
-	PA4,
-	PA5,
-	PA6,
-	PA7,//7
+#define LOW_PIN     (uint8)0
+#define HIGH_PIN    (uint8)1
+#define TOGGLE_PIN  (uint8)2
 
-	PB0,//8
-	PB1,
-	PB2,
-	PB3,
-	PB4,
-	PB5,
-	PB6,
-	PB7,//15
+#define HIGH_PORT  (uint8)0xFF
+#define LOW_PORT   (uint8)0x00
 
-	PC0,//16
-	PC1,
-	PC2,
-	PC3,
-	PC4,
-	PC5,
-	PC6,
-	PC7,//23
+typedef enum{
+	PA0,PA1,PA2,PA3,PA4,PA5,PA6,PA7,
+	PB0,PB1,PB2,PB3,PB4,PB5,PB6,PB7,
+	PC0,PC1,PC2,PC3,PC4,PC5,PC6,PC7,
+	PD0,PD1,PD2,PD3,PD4,PD5,PD6,PD7
+}PIN_NUM;
 
-	PD0,//24
-	PD1,
-	PD2,
-	PD3,
-	PD4,
-	PD5,
-	PD6,
-	PD7	//31
-}pins;
+void DIO_vidSetPortDir(uint8 u8CopyPort,uint8 u8CopyDir);
+void DIO_vidSetPortVal(uint8 u8CopyPort,uint8 u8CopyVal);
+uint8 DIO_u8GetPortVal(uint8 u8CopyPort);
 
-#define PIN_HIGH	(u8)1
-#define PIN_LOW		(u8)0
+void DIO_vidSetPinDir(uint8 u8CopyPin,uint8 u8CopyDir);
+void DIO_vidSetPinVal(uint8 u8CopyPin,uint8 u8CopyVal);
+uint8 DIO_u8GetPinVal(uint8 u8CopyPin);
 
-#define PULL_UP		(u8)1
-#define PULL_DOWN	(u8)0
+void DIO_vidSetPinsDir(uint8 *u8Pin, uint8 u8CopyBound, uint8 u8CopyDir);
+void DIO_vidSetPinsVal(uint8 *u8Pin, uint8 u8CopyBound, uint8 u8CopyVal);
 
-#define PIN_TOGGLE	(u8)2
-#define PIN_OUTPUT  (u8)1
-#define PIN_INPUT	(u8)0
-
-#define PORT_OUTPUT	0xff
-#define PORT_INPUT 	0x00
-
-#define PORT_HIGH	0xff
-#define PORT_LOW	0x00
-
-void DIO_voidSetPinsDir(u8 *u8copy_pins, u8 u8copy_size, u8 u8copy_direction);
-void DIO_voidSetPinsVal(u8 *u8copy_pins, u8 u8copy_size, u8 u8copy_val);
-void DIO_voidCopyPinsVal(u8 *u8copy_pins, u8 u8copy_size, u8 u8copy_values);
-
-void DIO_voidSetPinDir (u8 u8copy_pin, u8 u8copy_direction);
-void DIO_voidSetPinVal (u8 u8copy_pin, u8 u8copy_val);
-void DIO_voidTogglePin (u8 u8copy_pin);
-u8   DIO_u8GetPinVal   (u8 u8copy_pin);
-
-void DIO_voidSetPortDir(u8 u8copy_port, u8 u8copy_direction);
-void DIO_voidSetPortVal(u8 u8copy_port, u8 u8copy_val);
-u8   DIO_u8GetPortVal  (u8 u8copy_port);
-void DIO_voidTogglePort(u8 u8copy_port);
-
-#endif
+#endif /* MCAL_DIO_DIO_INIT_H_ */

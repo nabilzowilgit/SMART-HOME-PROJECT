@@ -6,5 +6,10 @@
 #define CLEAR_BIT(REG, bit)			(REG &= ~(1 << bit))
 #define TOGGLE_BIT(REG, bit)		(REG ^=  (1 << bit))
 #define TOGGLE_REG(REG)				(REG  =  ~REG)
+#define GET_BITS(reg,bit,val)                 ((reg >> bit) & val)
+#define SET_BITS(reg,bit,val)           reg |= ( val << bit )
+#define CLR_BITS(reg,bit,val)                reg &= (~(val << bit))
+#define TOGGLE_BITS(reg,bit,val)             reg ^= ( val << bit )
+
 
 #endif
