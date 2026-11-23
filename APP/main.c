@@ -10,12 +10,18 @@
 #include "../HAL/LEDS/LEDS_init.h"
 #include "../HAL/DIMMER/DIMMER_Lamp.h"
 #include "../HAL/KEYPAD/keypad_init.h"
+#include "../HAL/UART/UART_Init.h"
 
+#include"Login_System/LOG_Init.h"
 
 # define F_CPU 16000000UL
 #include <util/delay.h>
 
 #define delay(x)	(_delay_ms(x));
+
+
+uint8 name[8],pass[8];
+
 
 int main(void)
 {
@@ -23,23 +29,20 @@ int main(void)
 
 	Keypad_vidInit();
 	LCD_vid4BitInit();
+	USART_voidInitMaster();
 
 	while(1)
 	{
-		key = Keypad_u8CharStat();
-
-		if (key != 0)
-		{
-			LCD_vid4BitWriteChar(key);
+		for (uint8 i=0;i<8;i++){
+			name[i]=USART_uint8ReceiveData();
+			USART_voidSendData(USART_uint8ReceiveData());
 		}
-
-//		LEDS_voidSwitch(LED1, LED_OFF);
-//		delay(500);
-//		LM35_voidGetTemp();
-//		LCD_vid4BitWriteCmd(LCD_CMD_CLEAR_DIS);
-//		SERVO_MoveTo(90);
-//		LM35_voidStart();
-//		LEDS_voidSwitch(LED1, LED_ON);
+		for (uint8 i=0;i<8;i++){
+			pass[i]=USART_uint8ReceiveData();
+			USART_voidSendData(USART_uint8ReceiveData());
+		}
+		LOG_StoreData(name,pass);
+		LCD_vid4BitWriteInt(LOG_CheckData(name,pass));
 	}
 
 	return 0;

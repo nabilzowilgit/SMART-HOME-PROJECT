@@ -17,7 +17,7 @@
 //}
 
 
-void UART_vidInit(){
+void MUART_vidInit(){
 
 #if    (Mode_Select == Synchronous_Operation)
 	UCSRC |= 0xC0;
