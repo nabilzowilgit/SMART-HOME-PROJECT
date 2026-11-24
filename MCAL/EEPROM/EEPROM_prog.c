@@ -7,9 +7,11 @@
 
 #include "EEPROM_init.h"
 
-void EEPROM_voidWriteData(uint16 address, uint8 data)
+void EEPROM_voidStoreChar(uint16 address, uint8 data)
 {
 /*
+ *  MY MANUAL CODE USING ONLY C
+ *
 	// USING THE ORDER OF THE STEPS LISTED IN THE DATASHEET
 
 	while(GET_BIT(EECR_R, EECR_EEWE)); // INTERRUPT CAN BE USED INSTEAD
@@ -20,6 +22,8 @@ void EEPROM_voidWriteData(uint16 address, uint8 data)
 	EECR_R |= (1 << EECR_EEMWE); // MASTER WRITE ENABLE
 	EECR_R |= (1 << EECR_EEWE); // EEPROM WRITE ENABLE
 */
+
+	/* AI CODE USING ASSEMPLY */
 
 	  uint8 savedSREG;
 
@@ -50,9 +54,11 @@ void EEPROM_voidWriteData(uint16 address, uint8 data)
 	SREG_R = savedSREG;
 }
 
-uint8 EEPROM_u8ReadData(uint16 address)
+uint8 EEPROM_u8ReadChar(uint16 address)
 {
 /*
+ * 	MY MANUAL CODE USING ONLY C
+ *
 	while(GET_BIT(EECR_R, EECR_EEWE)); // INTERRUPT CAN BE USED INSTEAD
 
 	EEARL_R = address;
@@ -61,6 +67,8 @@ uint8 EEPROM_u8ReadData(uint16 address)
 
 	return EEDR_R;
 */
+
+	/* AI CODE USING ASSEMPLY */
 
 	uint8 savedSREG;
 	uint8 data;
@@ -86,6 +94,22 @@ uint8 EEPROM_u8ReadData(uint16 address)
 
 	return data;
 
+}
+
+void  EEPROM_voidStoreStr(uint16 starting_address, uint8 *string)
+{
+	for(uint8 i = 0; i < STRING_LIMIT; i++)
+	{
+		EEPROM_voidStoreChar(starting_address + i, string[i]);
+	}
+}
+
+void EEPROM_voidReadStr(uint16 starting_address, uint8 *string)
+{
+	for(uint8 i = 0; i < STRING_LIMIT; i++)
+	{
+		string [i] = EEPROM_u8ReadChar(starting_address + i);
+	}
 }
 
 void EEPROM_voidReadyInterruptOn()

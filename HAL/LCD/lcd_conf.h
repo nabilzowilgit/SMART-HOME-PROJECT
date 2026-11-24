@@ -14,9 +14,9 @@
 extern uint8 LCD_4Bit_Data_Pin[4];
 
 /******** LCD Control Pin *********/
-#define RS  PB0
+#define RS  PB1
 #define RW	PB0
-#define E   PB1
+#define E   PB2
 /********* LCD float limit *******/
 #define flimit 4
 
